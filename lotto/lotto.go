@@ -31,12 +31,33 @@ func EmptyRow() LottoRow {
 	return LottoRow{[]int{}, 0}
 }
 
+// `NewLottoRow` creates a `LottoRow` with `numbers` and `super_number` as values.
+// The `numbers` slice needs to contain exactly six different integers and the
+// `super_number` must be a value between `1` and `9`
+// It returns a new `LottoRow` object in which the `numbers` will be sorted.
 func NewLottoRow(numbers []int, super_number int) (result LottoRow, err error) {
 
-        if len(numbers) < 6 {
-                return EmptyRow(),
-                        fmt.Errorf("Please specify 6 numbers for each lottery row")
-        }
+	if len(numbers) != 6 {
+		return EmptyRow(),
+			fmt.Errorf(lottoError["6_numbers"])
+	}
+
+	if (super_number < 1) || (super_number > 9) {
+		return EmptyRow(),
+			fmt.Errorf(lottoError["super_0..9"])
+	}
+
+	sort.Sort(sort.IntSlice(numbers))
+
+	for i := 0; i < len(numbers)-1; i++ {
+		if numbers[i] == numbers[i+1] {
+			return EmptyRow(),
+				fmt.Errorf(lottoError["num_no_dup"])
+		}
+	}
+
+	return LottoRow{numbers, super_number}, nil
+}
 
         var sorted_numbers []int = numbers
 
