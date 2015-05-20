@@ -60,6 +60,46 @@ func NewLottoRow(numbers []int, super_number int) (result LottoRow, err error) {
 }
 
         var sorted_numbers []int = numbers
+func NewLottoGame(path string) (LottoGame, error) {
+	data, err := loadRawDatafromJSON(path)
+	if err != nil {
+		return nil, err
+	}
+
+	row_errors := make([]string, 0, len(data))
+	game := make([]LottoRow, len(data), len(data))
+	for i := range data {
+		row, err := NewLottoRow(data[i].Numbers, data[i].SuperNumber)
+		if err != nil {
+			row_errors = append(row_errors, err.Error())
+		} else {
+			game[i] = row
+		}
+	}
+
+	if len(row_errors) > 0 {
+		return nil, fmt.Errorf(strings.Join(row_errors, "\n"))
+	}
+
+	return game, nil
+}
+
+func loadRawDatafromJSON(path string) (LottoGame, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to open file.\n%s", err)
+	}
+
+	content, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to read from file.\n%s", err)
+	}
+
+	var data LottoGame
+	err = json.Unmarshal(content, &data)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to parse JSON.\n%s", err)
+	}
 
         return LottoRow{sort.Sort(numbers), super_number}, nil
 }
