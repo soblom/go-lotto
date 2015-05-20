@@ -1,8 +1,12 @@
 package lotto
 
 import (
-        "fmt"
-        "sort"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"sort"
+	"strings"
 )
 
 var lottoError map[string]string
@@ -20,13 +24,13 @@ type LottoRow struct {
 	SuperNumber int `json:"super"`
 }
 
+// A `LottoGame` consists of one or more LottoRows
 type LottoGame []LottoRow
 
-type intArray []int
-func (s intArray) Len() int { return len(s) }
-func (s intArray) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
-func (s intArray) Less(i, j int) bool { return s[i] < s[j] }
-
+// EmptyRow creates the "null element" of the LottoRow type.
+// Its values are not intended to be used, it is only there to signify "nil"
+// without using the "nil" keyword. It contains only zeros as numbers and as the
+// super_number and is as such not a valid LottoRow.
 func EmptyRow() LottoRow {
 	return LottoRow{[]int{}, 0}
 }
@@ -59,7 +63,6 @@ func NewLottoRow(numbers []int, super_number int) (result LottoRow, err error) {
 	return LottoRow{numbers, super_number}, nil
 }
 
-        var sorted_numbers []int = numbers
 func NewLottoGame(path string) (LottoGame, error) {
 	data, err := loadRawDatafromJSON(path)
 	if err != nil {
@@ -101,5 +104,5 @@ func loadRawDatafromJSON(path string) (LottoGame, error) {
 		return nil, fmt.Errorf("Failed to parse JSON.\n%s", err)
 	}
 
-        return LottoRow{sort.Sort(numbers), super_number}, nil
+	return data, nil
 }
