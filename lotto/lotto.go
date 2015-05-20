@@ -5,9 +5,10 @@ import (
         "sort"
 )
 
+// A LottoRow consists of 6 numbers between 1 and 49 and a `super number` between 0 and 9
 type LottoRow struct {
-        Numbers [6]int
-        SuperNumber int
+	Numbers     []int
+	SuperNumber int `json:"super"`
 }
 
 type LottoGame []LottoRow
@@ -18,7 +19,7 @@ func (s intArray) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 func (s intArray) Less(i, j int) bool { return s[i] < s[j] }
 
 func EmptyRow() LottoRow {
-        return LottoRow{[6]int{},0}
+	return LottoRow{[]int{}, 0}
 }
 
 func NewLottoRow(numbers []int, super_number int) (result LottoRow, err error) {
