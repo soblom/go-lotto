@@ -5,6 +5,15 @@ import (
         "sort"
 )
 
+var lottoError map[string]string
+
+func init() {
+	lottoError = make(map[string]string)
+	lottoError["6_numbers"] = "Each row needs to have exactly 6 numbers"
+	lottoError["super_0..9"] = "The super number must be between 1 and 9"
+	lottoError["num_no_dup"] = "numbers must not contain any duplicates"
+}
+
 // A LottoRow consists of 6 numbers between 1 and 49 and a `super number` between 0 and 9
 type LottoRow struct {
 	Numbers     []int
