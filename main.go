@@ -1,12 +1,25 @@
 package main
 
 import (
-        "fmt"
-        "github.com/soblom/golotto/lotto"
+	"fmt"
+	"github.com/soblom/go-lotto/lotto"
+	"os"
 )
 
 func main() {
-        fmt.Printf("Ich bin das Lotto-Programm\n")
-        row, _ := lotto.NewLottoRow([6]int{1,2,3,4,5,6},7)
-        fmt.Printf("%d, Superzahl: %d\n",row.Numbers,row.SuperNumber)
+	args := os.Args[1:]
+	if len(args) == 0 {
+		fmt.Printf("Usage: go-lotto <path_to_json>\n")
+		os.Exit(0)
+	}
+
+	game, err := lotto.NewLottoGame(args[0])
+	if err != nil {
+		fmt.Print(err)
+		os.Exit(1)
+	}
+
+	for i := range game {
+		fmt.Printf("%d\n", game[i])
+	}
 }
